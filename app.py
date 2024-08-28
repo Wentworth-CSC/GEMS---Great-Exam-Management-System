@@ -30,11 +30,15 @@ auth = identity.web.Auth(
 
 @app.route("/login")
 def login():
+    redirect_uri = url_for("auth_response", _external=True)
+    if "127.0.0.1" in redirect_uri:
+        redirect_uri = redirect_uri.replace("127.0.0.1", "localhost")
     return render_template("login.html", version=__version__, **auth.log_in(
         scopes=app_config.SCOPE, # Have user consent to scopes during log-in
         redirect_uri=url_for("auth_response", _external=True), # Optional. If present, this absolute URL must match your app's redirect_uri registered in Azure Portal
         prompt="select_account",  # Optional. More values defined in  https://openid.net/specs/openid-connect-core-1_0.html#AuthRequest
         ))
+
 
 
 @app.route(app_config.REDIRECT_PATH)
